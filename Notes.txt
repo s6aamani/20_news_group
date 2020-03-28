@@ -1,84 +1,27 @@
-Please answer / investigate the following tasks:
-
-
 #(Short) Literature overview: 
 
-Q) Which were some of the first approaches? 
-Q) How well did they perform and why? 
-
-	The training as well as test dataset was imported using fetch_20newsgroups from sklearn dataset.
-This dataset is one of the classical dataset for experiments in text applications of machine learning
-techniques, such as text classification and text clustering. It contains around 18,000 posts belonging
-to 20 different categories. The training dataset are the posts before a particular date and test dataset
-posts are ones after the date. The goal here is to use machine learning to classify new posts (from test dataset). 
-	After importing the dataset in the Jupiter notebook, first the length of the datasets were checked.Training
-size is around 60% (11,314) of the total dataset, which is good enough to begin training with. It is also seen that
-the dataset is not completely balanced. News reports from categories 'comp.graphics', 'talk.politics.misc' & 'talk.religion.misc'
-are fewer compared to other categories. Overall,  the number of articles for each news group given is roughly uniform.
-(In case of imbalanced classes confusion-matrix is good technique to summarising the performance of a classification algorithm.)
-       Counter vectoriser was used, which builds a dictionary of features and transforms documents to feature
-vector. The number of features in the dataset are 101322.  
-       First classifier to use a Multinominal Naive bayesian classifier. This was chosen as it is well
-known for text classification. Accuracy on the test dataset of around ~77% was noted. To improve the accuracy,
-grid search for the parameters was done. The test dataset accuracy is around ~82%.  
+  The training as well as test dataset was imported using fetch_20newsgroups from sklearn dataset. This dataset is one of the classical dataset for experiments in text applications of machine learning techniques, such as text classification and text clustering. It contains around 18,000 posts belonging to 20 different categories. The training dataset are the posts before a particular date and test dataset posts are ones after the date. The goal here is to use machine learning to classify new posts (from test dataset). 
+  After importing the dataset in the Jupyter notebook, first the length of the datasets were checked. Training size is around 60% (11,314) of the total dataset, which is good enough to begin training with. It is also seen that the dataset is balanced. Only news reports from categories 'comp.graphics', 'talk.politics.misc' & 'talk.religion.misc' are fewer compared to other categories. Overall,  the number of articles for each news group given is roughly uniform. (In case of imbalanced classes confusion-matrix is good technique to summarising the performance of a classification algorithm.)
+       Counter vectoriser was used, which builds a dictionary of features and transforms documents to feature vector. The number of features in the dataset are 101322.  
+       First classifier to use a Multinominal Naive bayesian classifier. This was chosen as it is well known for text classification. Accuracy on the test dataset of around ~82.9% was noted.
 
 #Data exploration: 
 
-q) What are the most prominent labels in the corpus, which ones are particularly rare? Any idea why?
-
-Q) Is there something that strikes the eye? Are there any curious findings?
-
-Q) What are some methods to visualize / explore textual data? If you find good examples, please
-name or ideally include them tuned to this data set.
-
-	To examine the properties of the dataset by categories, length of text, number of unique
-letters, unique characters, unique punctuations, uppercase, lowercase were plotted. Only the length
-of text for each categories was noted to be imbalanced. Longer documents might have higher count values
-than shorter documents. To avoid these potential discrepancies, TiffTransformer was used after counter
-vectoriser. Tf–idf stands for “Term Frequency times Inverse Document Frequency”. Term frequencies can
-be defined as the number of occurrences of each word in a document by the total number of words in the
-document. To downscale weights for words that occur in many documents in the corpus and are therefore
-less informative than those that occur only in a smaller portion of the corpus, Term frequency was
-divided by document frequency.
-	 Ignoring stop words in English language such as 'the', 'a', 'an'  improved the accuracy marginally
-(< 1%). Further cleaning was also done such as change text to lower case, remove punctuation, remove bad
-characters, stemming. All of it increases the accuracy marginally.
-	It was noticed that each post has a subject, email ID etc, lot of metadata. Words such as edu, Subject,
-etc. might give wrong classification. For practical purpose; header, footer and quotes were excluded from each
-post. However, the accuracy has decreased to 70 %.  
-	To explore the textual data further, a word cloud was plotted for each category. For example: for category
-"com.graphics", program, image & file words were more prominent. 
-
+ To examine the properties of the dataset by categories, length of text, number of unique letters, unique characters, unique punctuations, uppercase, lowercase were plotted. Only the length of text for each categories was noted to be imbalanced. Longer documents might have higher count values than shorter documents. To avoid these potential discrepancies, TiffTransformer was used after counter vectoriser. Tf–idf stands for “Term Frequency times Inverse Document Frequency”. Term frequencies can be defined as the number of occurrences of each word in a document by the total number of words in the document. To downscale weights for words that occur in many documents in the corpus and are therefore less informative than those that occur only in a smaller portion of the corpus, Term frequency was divided by document frequency. 
+        Ignoring stop words in English language such as 'the', 'a', 'an'  improved the accuracy marginally (< 1%). Further cleaning can also be done such as change text to lower case, remove punctuation, remove bad characters. Stemming can also be used. All of it increases the accuracy marginally.
+  It was noticed that each post has a subject, email ID etc, lot of metadata. Meta data includes words such as edu, Subject, etc. Whether to include meta data or not, depends on the goal. In this case, meta data was included  in the dataset.
 
 
 #Experiments:
-
-Q) Compare some already implemented algorithms from scikit-learn: Naive Bayes Classifier, SVM, RandomForest?
-Q) What are good features?
-Q) BERT fine tuning: would that work? Why or why not?
-
-
 Results were as follows:
-Multinominal Naive bayesian classifier achieved an accuracy of 70.10%
-SGD classifier achieved an accuracy of 68.41%
-SVC classifier achieved an accuracy of 67.37%
-    Multi-NB classifier has the best accuracy so far of 70.10%, with cross-validation accuracy of 77.49%.  
+	Multinominal Naive bayesian classifier achieved an accuracy of 82.95%
+    SGD classifier achieved an accuracy of 83.04%
+    SVC classifier achieved an accuracy of 82.03%%
+    
+Bert classifier uses a very different approach. Bert uses a trained model which is trained on a very large dataset (1 billion words). This pre-trained knowledge in word embeddings. The idea is that the words that are nearby should have similar representation. A vector is assign to each word and it slides a window over the text. Word vectors re nudged around to minimise surprise. It keeps iterating then it thinks it is 'good enough'. The vector-space word than reorganises itself. 
 
-Bert works because it uses a very different approach. Bert uses a trained model which is trained on a very
-large dataset (1 billion words). This pre-trained knowledge in word embeddings. The idea is that the words
-that are nearby should have similar representation. A vector is assign to each word and it slides a window over
-the text. Word vectors re nudged around to minimise surprise. It keeps iterating then it thinks it is 'good enough'.
-The vector-space word than reorganises itself. 
+    For fine tuning, a layer with softmax function was added to the model. Fine tuning is bit slow because the model itself is very large (109 Million weights). Using keras GPU, it takes some minutes for fine tuning on the twenty news groups training dataset. 
 
-For fine tuning, a layer with softmax function was added to the model. Fine tuning is bit slow because the model
-itself is very large (109 Million weights). Using keras GPU, it takes some minutes for fine tuning on the twenty
-news groups training dataset. 
+    The accuracy it has able to achieve is ~82.84%.      
 
-The accuracy it has able to achieve is 90.7 !!!      
-
-The code for implementation of BERT can be found here: 
-
-https://www.kaggle.com/sharmilaupadhyaya/20newsgroup-classification-using-keras-bert-in-gpu
-              
-
-Conclusion: The best approach to solve classification problem of 20 news group is using keras Bert model.    
+Conclusion: All 4 classifiers had roughly the same accuracies, therefore any of this classifiers is suitable to solve our problem.   
